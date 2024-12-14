@@ -75,3 +75,4 @@ jobs:
         asset_path: build/**/myapp
         asset_name: myapp-${{ matrix.goos }}-${{ matrix.goarch }}
         asset_content_type: application/octet-stream
+        tag_name: ${{ steps.bump_version.outputs.new_tag }}
