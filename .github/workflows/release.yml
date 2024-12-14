@@ -38,12 +38,13 @@ jobs:
 
     - name: Bump version and push tag
       uses: anothrNick/github-tag-action@v1
+      id: bump_version
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         WITH_V: false
         DEFAULT_BUMP_LEVEL: patch
     outputs:
-      new_tag: ${{ steps.tag_version.outputs.new_tag }}
+      new_tag: ${{ steps.bump_version.outputs.new_tag }}
 
   release:
     runs-on: ubuntu-latest
