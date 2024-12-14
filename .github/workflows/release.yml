@@ -27,7 +27,7 @@ jobs:
     - name: Build
       run: |
         mkdir -p build/${{ matrix.goos }}-${{ matrix.goarch }}
-        GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} go build -o build/${{ matrix.goos }}-${{ matrix.goarch }}/myapp
+        GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} go build -o build/fai-${{ matrix.goos }}-${{ matrix.goarch }}
 
   bump_version:
     runs-on: ubuntu-latest
@@ -61,6 +61,6 @@ jobs:
         draft: false
         prerelease: false
         files: |
-          build/*
+          build/fai-*
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
