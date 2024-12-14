@@ -1,0 +1,3 @@
+api:
+  url: "<AI api url>"
+  key: "<AI api key>"

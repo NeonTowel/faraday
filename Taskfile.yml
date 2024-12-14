@@ -1,0 +1,18 @@
+version: '3'
+
+tasks:
+  build:
+    desc: "Build the Go project"
+    cmds:
+      - go build -o bin/ ./...
+
+  release:
+    desc: "Build the Go project for release"
+    cmds:
+      - for:
+          matrix:
+            OS: ["windows", "linux", "darwin"]
+            ARCH: ["amd64", "arm64"]
+        cmd: GOOS={{ .ITEM.OS }} GOARCH={{ .ITEM.ARCH }} go build -ldflags "-s -w" -o release/fai-{{ .ITEM.OS }}-{{ .ITEM.ARCH }} ./...
+    deps: [clean]
+    silent: false
