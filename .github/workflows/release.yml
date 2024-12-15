@@ -11,10 +11,6 @@ permissions:
 jobs:
   release:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        goos: [linux, windows, darwin]
-        goarch: [amd64, arm64]
     steps:
     - name: Check out code
       uses: actions/checkout@v4
@@ -41,8 +37,8 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         WITH_V: false
         DEFAULT_BUMP: patch
-    outputs:
-      new_tag: ${{ steps.bump_version.outputs.new_tag }}
+      outputs:
+        new_tag: ${{ steps.bump_version.outputs.new_tag }}
 
     - name: Create Release
       uses: softprops/action-gh-release@v2
