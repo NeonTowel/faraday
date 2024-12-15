@@ -14,5 +14,4 @@ tasks:
             OS: ["windows", "linux", "darwin"]
             ARCH: ["amd64", "arm64"]
         cmd: GOOS={{ .ITEM.OS }} GOARCH={{ .ITEM.ARCH }} go build -ldflags "-s -w" -o release/fai-{{ .ITEM.OS }}-{{ .ITEM.ARCH }} ./...
-    deps: [clean]
     silent: false
