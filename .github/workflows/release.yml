@@ -24,10 +24,15 @@ jobs:
       with:
         go-version: 1.23
 
-    - name: Build
+    - name: Install go-task
       run: |
-        mkdir -p build/${{ matrix.goos }}-${{ matrix.goarch }}
-        GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} go build -o build/fai-${{ matrix.goos }}-${{ matrix.goarch }}
+        TASK_VERSION=$(curl --silent "https://api.github.com/repos/go-task/task/releases/latest" | grep -Po '"tag_name": "\K.*?(?=")')
+        curl -L "https://github.com/go-task/task/releases/download/${TASK_VERSION}/task_linux_amd64.tar.gz" -o task.tar.gz
+        tar -xzf task.tar.gz -C /usr/local/bin task
+        rm task.tar.gz
+
+    - name: Build release binaries
+      run: task release
 
     - name: Bump version and push tag
       uses: anothrNick/github-tag-action@v1
@@ -47,6 +52,6 @@ jobs:
         draft: false
         prerelease: false
         files: |
-          build/*
+          release/fai-*
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
