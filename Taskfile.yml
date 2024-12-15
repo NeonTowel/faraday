@@ -13,5 +13,10 @@ tasks:
           matrix:
             OS: ["windows", "linux", "darwin"]
             ARCH: ["amd64", "arm64"]
-        cmd: GOOS={{ .ITEM.OS }} GOARCH={{ .ITEM.ARCH }} go build -ldflags "-s -w" -o release/fai-{{ .ITEM.OS }}-{{ .ITEM.ARCH }} ./...
+        cmd: |
+          if [ "{{ .ITEM.OS }}" = "windows" ]; then \
+            GOOS={{ .ITEM.OS }} GOARCH={{ .ITEM.ARCH }} go build -ldflags "-s -w" -o release/fai-{{ .ITEM.OS }}-{{ .ITEM.ARCH }}.exe ./...; \
+          else \
+            GOOS={{ .ITEM.OS }} GOARCH={{ .ITEM.ARCH }} go build -ldflags "-s -w" -o release/fai-{{ .ITEM.OS }}-{{ .ITEM.ARCH }} ./...; \
+          fi
     silent: false
