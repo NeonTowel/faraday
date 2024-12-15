@@ -9,7 +9,7 @@ permissions:
   contents: write 
 
 jobs:
-  build:
+  release:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -29,48 +29,24 @@ jobs:
         mkdir -p build/${{ matrix.goos }}-${{ matrix.goarch }}
         GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} go build -o build/fai-${{ matrix.goos }}-${{ matrix.goarch }}
 
-    - name: Archive binaries
-      uses: actions/upload-artifact@v4
-      with:
-        name: binaries-${{ matrix.goos }}-${{ matrix.goarch }}
-        path: build/${{ matrix.goos }}-${{ matrix.goarch }}
-
-  bump_version:
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
-    - name: Check out code
-      uses: actions/checkout@v4
-
     - name: Bump version and push tag
       uses: anothrNick/github-tag-action@v1
       id: bump_version
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         WITH_V: false
-        DEFAULT_BUMP_LEVEL: patch
+        DEFAULT_BUMP: patch
     outputs:
       new_tag: ${{ steps.bump_version.outputs.new_tag }}
-
-  release:
-    runs-on: ubuntu-latest
-    needs: [build, bump_version]
-    steps:
-    - name: Check out code
-      uses: actions/checkout@v3
-
-    - uses: actions/download-artifact@v4
-      with:
-        path: artifacts
 
     - name: Create Release
       uses: softprops/action-gh-release@v2
       with:
-        tag_name: ${{ needs.bump_version.outputs.new_tag }}
-        name: Release v${{ needs.bump_version.outputs.new_tag }}
+        tag_name: ${{ steps.bump_version.outputs.new_tag }}
+        name: Release v${{ steps.bump_version.outputs.new_tag }}
         draft: false
         prerelease: false
         files: |
-          artifacts/*
+          build/*
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
