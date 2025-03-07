@@ -20,11 +20,13 @@ tasks:
             GOOS={{ .ITEM.OS }} GOARCH={{ .ITEM.ARCH }} go build -ldflags "-s -w" -o release/fai-{{ .ITEM.OS }}-{{ .ITEM.ARCH }}/fai.exe ./...; \
             zip -r release/fai-{{ .ITEM.OS }}-{{ .ITEM.ARCH }}.zip release/fai-{{ .ITEM.OS }}-{{ .ITEM.ARCH }}; \
             sha256sum release/fai-{{ .ITEM.OS }}-{{ .ITEM.ARCH }}.zip > release/fai-{{ .ITEM.OS }}-{{ .ITEM.ARCH }}.zip.sha256; \
+            sha256sum release/fai-{{ .ITEM.OS }}-{{ .ITEM.ARCH }}.zip >> release/checksums.txt; \
             rm -r release/fai-{{ .ITEM.OS }}-{{ .ITEM.ARCH }}; \
           else \
             GOOS={{ .ITEM.OS }} GOARCH={{ .ITEM.ARCH }} go build -ldflags "-s -w" -o release/fai-{{ .ITEM.OS }}-{{ .ITEM.ARCH }}/fai ./...; \
             tar -czf release/fai-{{ .ITEM.OS }}-{{ .ITEM.ARCH }}.tar.gz -C release fai-{{ .ITEM.OS }}-{{ .ITEM.ARCH }}; \
             sha256sum release/fai-{{ .ITEM.OS }}-{{ .ITEM.ARCH }}.tar.gz > release/fai-{{ .ITEM.OS }}-{{ .ITEM.ARCH }}.tar.gz.sha256; \
+            sha256sum release/fai-{{ .ITEM.OS }}-{{ .ITEM.ARCH }}.tar.gz >> release/checksums.txt; \
             rm -r release/fai-{{ .ITEM.OS }}-{{ .ITEM.ARCH }}; \
           fi
     silent: false
