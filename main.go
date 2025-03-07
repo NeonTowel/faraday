@@ -36,11 +36,17 @@ func init() {
 		fmt.Printf("Error getting executable path: %v\n", err)
 		os.Exit(1)
 	}
-	configFilePath := filepath.Join(filepath.Dir(exePath), "config.yaml")
+	// Try config in faraday subfolder first, then executable directory
+	configFilePath := filepath.Join(filepath.Dir(exePath), "faraday", "config.yaml")
 	configFile, err := os.Open(configFilePath)
 	if err != nil {
-		fmt.Printf("Error opening config file: %v\n", err)
-		os.Exit(1)
+		// Fallback to executable directory
+		configFilePath = filepath.Join(filepath.Dir(exePath), "config.yaml")
+		configFile, err = os.Open(configFilePath)
+		if err != nil {
+			fmt.Printf("Error opening config file: %v\n", err)
+			os.Exit(1)
+		}
 	}
 	defer configFile.Close()
 
