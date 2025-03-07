@@ -7,7 +7,7 @@ tasks:
       - go build -o bin/ ./...
 
   release:
-    desc: "Build the Go project for release"
+    desc: "Build, compress, and create checksums for the Go project release"
     cmds:
       - for:
           matrix:
@@ -16,7 +16,13 @@ tasks:
         cmd: |
           if [ "{{ .ITEM.OS }}" = "windows" ]; then \
             GOOS={{ .ITEM.OS }} GOARCH={{ .ITEM.ARCH }} go build -ldflags "-s -w" -o release/fai-{{ .ITEM.OS }}-{{ .ITEM.ARCH }}.exe ./...; \
+            zip -j release/fai-{{ .ITEM.OS }}-{{ .ITEM.ARCH }}.zip release/fai-{{ .ITEM.OS }}-{{ .ITEM.ARCH }}.exe; \
+            rm release/fai-{{ .ITEM.OS }}-{{ .ITEM.ARCH }}.exe; \
+            sha256sum release/fai-{{ .ITEM.OS }}-{{ .ITEM.ARCH }}.zip > release/fai-{{ .ITEM.OS }}-{{ .ITEM.ARCH }}.zip.sha256; \
           else \
             GOOS={{ .ITEM.OS }} GOARCH={{ .ITEM.ARCH }} go build -ldflags "-s -w" -o release/fai-{{ .ITEM.OS }}-{{ .ITEM.ARCH }} ./...; \
+            tar -czf release/fai-{{ .ITEM.OS }}-{{ .ITEM.ARCH }}.tar.gz -C release fai-{{ .ITEM.OS }}-{{ .ITEM.ARCH }}; \
+            rm release/fai-{{ .ITEM.OS }}-{{ .ITEM.ARCH }}; \
+            sha256sum release/fai-{{ .ITEM.OS }}-{{ .ITEM.ARCH }}.tar.gz > release/fai-{{ .ITEM.OS }}-{{ .ITEM.ARCH }}.tar.gz.sha256; \
           fi
     silent: false
