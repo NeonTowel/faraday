@@ -47,5 +47,6 @@ jobs:
         prerelease: false
         files: |
           release/fai-*
+          release/checksums.txt
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
